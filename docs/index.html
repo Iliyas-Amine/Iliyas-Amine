@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%230d0f12%22/><text y=%221.15em%22 x=%2218%22 font-size=%2290%22 font-family=%22monospace%22 font-weight=%22bold%22 fill=%22%23539bf5%22>*</text></svg>">
+    <title>Journalctl Iliyas</title>
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+
+    <div class="layout">
+        <aside class="sidebar">
+            <header class="brand">
+                <h1>Iliyas Amine</h1>
+                <p class="tagline">make clean && make</p>
+            </header>
+
+            <nav id="nav-container" class="nav-container">
+            </nav>
+
+            <footer class="sidebar-footer">
+                <div class="footer-links">
+                    <a href="https://github.com/iliyas-amine" target="_blank" rel="noopener">GitHub</a>
+                    <a href="mailto:iliyas.amine@outlook.com">Email</a>
+                    <button id="theme-toggle" class="theme-toggle-btn" type="button" aria-label="Toggle theme" title="Toggle theme">
+                        <span class="theme-indicator"></span>
+                    </button>
+                </div>
+            </footer>
+        </aside>
+        <main class="content-zone">
+            <article id="article-viewer" class="markdown-body">
+                <p class="loading">Loading notebook content...</p>
+            </article>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
