@@ -1,6 +1,8 @@
 // Format: "Group_Index" -> Maps to articles/Group_Index.md
 const ARTICLE_FILES = [
-    "welcome"
+    "welcome",
+    "Debi-Art_0",
+    "Debi-Art_1"
 ];
 
 let currentCatalog = {};
