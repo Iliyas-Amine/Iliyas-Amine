@@ -6,7 +6,7 @@
 I see you found my Github page. Well then **WELCOME**!
 Here you'll find all my public repositories and projects with direct links.
 
-And if you want more, checkout my website where I document all my projects and even some unreleased ones:
+And if you want more, checkout my website where I document all my projects and even some ongoing ones:
 
 [![iliyasdev.xyz](https://img.shields.io/badge/iliyasdev.xyz-6C757D?style=flat-square&logo=google-chrome&logoColor=white)](https://iliyasdev.xyz)
 

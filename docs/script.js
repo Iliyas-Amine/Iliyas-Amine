@@ -3,13 +3,15 @@ const ARTICLE_FILES = [
     "welcome"
 ];
 
+let currentCatalog = {};
+
 document.addEventListener("DOMContentLoaded", async () => {
     initTheme();
+    initMobileMenu();
 
     const navContainer = document.getElementById("nav-container");
-    const viewer = document.getElementById("article-viewer");
-    const catalog = await buildCatalog(ARTICLE_FILES);
-    renderSidebar(catalog, navContainer);
+    currentCatalog = await buildCatalog(ARTICLE_FILES);
+    renderSidebar(currentCatalog, navContainer);
     const initialHash = window.location.hash.replace("#", "");
     const startArticle = ARTICLE_FILES.includes(initialHash) ? initialHash : "welcome";
     
@@ -22,6 +24,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 });
+
+function initMobileMenu() {
+    const mobileMenuBtn = document.getElementById("mobile-menu-btn");
+    const sidebar = document.getElementById("sidebar");
+
+    if (mobileMenuBtn && sidebar) {
+        mobileMenuBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("is-open");
+        });
+    }
+}
+
+function closeMobileMenu() {
+    const sidebar = document.getElementById("sidebar");
+    if (sidebar && sidebar.classList.contains("is-open")) {
+        sidebar.classList.remove("is-open");
+    }
+}
 
 function initTheme() {
     const savedTheme = localStorage.getItem("theme") || "light";
@@ -121,6 +141,8 @@ async function loadArticle(articleId) {
         el.classList.toggle("active", el.dataset.id === articleId);
     });
 
+    closeMobileMenu();
+
     try {
         const response = await fetch(`articles/${articleId}.md`);
         if (!response.ok) {
@@ -130,10 +152,167 @@ async function loadArticle(articleId) {
 
         viewer.innerHTML = marked.parse(markdownText);
         window.location.hash = articleId;
+
+        if (articleId === "welcome") {
+            renderWelcomeGroups(viewer, currentCatalog);
+        } else {
+            renderArticleNav(articleId, viewer);
+        }
+
+        const contentZone = document.querySelector(".content-zone");
+        if (contentZone) {
+            contentZone.scrollTop = 0;
+        }
     } catch (err) {
         viewer.innerHTML = `
             <h1>404 — Article Not Found</h1>
             <p>Could not load file <code>articles/${articleId}.md</code>.</p>
         `;
     }
+}
+
+function renderWelcomeGroups(viewer, catalog) {
+    if (!catalog || Object.keys(catalog).length === 0) return;
+
+    const section = document.createElement("section");
+    section.className = "welcome-groups-section";
+    section.setAttribute("aria-label", "Browse article groups");
+
+    let html = `<h2 class="welcome-groups-title">Explore Topics</h2>`;
+
+    for (const [groupName, items] of Object.entries(catalog)) {
+        if (!items || items.length === 0) continue;
+
+        html += `
+            <div class="welcome-group-block">
+                <div class="group-block-header">
+                    <h3 class="welcome-group-header">${escapeHtml(groupName)}</h3>
+                    <div class="slider-controls">
+                        <button class="slider-arrow prev-arrow" type="button" aria-label="Previous articles" title="Previous articles">
+                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                        </button>
+                        <button class="slider-arrow next-arrow" type="button" aria-label="Next articles" title="Next articles">
+                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="cards-slider">
+        `;
+
+        items.forEach((item, idx) => {
+            html += `
+                <a href="#${item.id}" class="article-card" data-id="${item.id}">
+                    <span class="card-number">#${idx + 1}</span>
+                    <h4 class="card-title">${escapeHtml(item.title)}</h4>
+                    <span class="card-action">Read article &rarr;</span>
+                </a>
+            `;
+        });
+
+        html += `
+                </div>
+            </div>
+        `;
+    }
+
+    section.innerHTML = html;
+    viewer.appendChild(section);
+
+    section.querySelectorAll(".welcome-group-block").forEach(block => {
+        const slider = block.querySelector(".cards-slider");
+        const prevBtn = block.querySelector(".prev-arrow");
+        const nextBtn = block.querySelector(".next-arrow");
+
+        if (!slider || !prevBtn || !nextBtn) return;
+
+        function updateArrows() {
+            const isScrollable = slider.scrollWidth > slider.clientWidth + 2;
+            const canScrollLeft = slider.scrollLeft > 2;
+            const canScrollRight = slider.scrollLeft < (slider.scrollWidth - slider.clientWidth - 2);
+
+            if (!isScrollable) {
+                prevBtn.style.display = "none";
+                nextBtn.style.display = "none";
+            } else {
+                prevBtn.style.display = "inline-flex";
+                nextBtn.style.display = "inline-flex";
+                prevBtn.style.opacity = canScrollLeft ? "1" : "0.3";
+                prevBtn.style.pointerEvents = canScrollLeft ? "auto" : "none";
+                nextBtn.style.opacity = canScrollRight ? "1" : "0.3";
+                nextBtn.style.pointerEvents = canScrollRight ? "auto" : "none";
+            }
+        }
+
+        prevBtn.addEventListener("click", () => {
+            slider.scrollBy({ left: -260, behavior: "smooth" });
+        });
+
+        nextBtn.addEventListener("click", () => {
+            slider.scrollBy({ left: 260, behavior: "smooth" });
+        });
+
+        slider.addEventListener("scroll", updateArrows);
+        window.addEventListener("resize", updateArrows);
+
+        setTimeout(updateArrows, 50);
+    });
+}
+
+function renderArticleNav(articleId, viewer) {
+    if (articleId === "welcome") return;
+
+    const parts = articleId.split("_");
+    const groupName = parts[0];
+    const groupItems = currentCatalog[groupName];
+
+    if (!groupItems || groupItems.length <= 1) return;
+
+    const currentIndex = groupItems.findIndex(item => item.id === articleId);
+    if (currentIndex === -1) return;
+
+    const prevArticle = currentIndex > 0 ? groupItems[currentIndex - 1] : null;
+    const nextArticle = currentIndex < groupItems.length - 1 ? groupItems[currentIndex + 1] : null;
+
+    if (!prevArticle && !nextArticle) return;
+
+    const nav = document.createElement("nav");
+    nav.className = "article-nav";
+    nav.setAttribute("aria-label", "Article navigation");
+
+    let navContent = "";
+
+    if (prevArticle) {
+        navContent += `
+            <a href="#${prevArticle.id}" class="article-nav-btn prev-btn" data-id="${prevArticle.id}">
+                <span class="nav-btn-label">&larr; Previous</span>
+                <span class="nav-btn-title">${escapeHtml(prevArticle.title)}</span>
+            </a>
+        `;
+    }
+
+    if (nextArticle) {
+        navContent += `
+            <a href="#${nextArticle.id}" class="article-nav-btn next-btn" data-id="${nextArticle.id}">
+                <span class="nav-btn-label">Next &rarr;</span>
+                <span class="nav-btn-title">${escapeHtml(nextArticle.title)}</span>
+            </a>
+        `;
+    }
+
+    nav.innerHTML = navContent;
+    viewer.appendChild(nav);
+}
+
+function escapeHtml(str) {
+    if (!str) return "";
+    return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }

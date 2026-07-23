@@ -16,4 +16,4 @@ I also hate Windows, if you couldn't tell.
 
 I would love to give you a concise and straight to the point bullet list here, but I am very inconsistent in what I dive into. I might be doing low-level one time, then do web, and another time you'll find me wetting my feet in a new deal. So what I can say is expect some **weirdly diverse yet unrelated** content.
 
-So yeah, feel free to browse through the project series in the sidebar. Select any article to begin reading! And just try to act like you are interested.
+So yeah, feel free to browse through the project series below. Select any article to begin reading! And just try to act like you are interested.
