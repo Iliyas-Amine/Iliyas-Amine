@@ -155,6 +155,14 @@ async function loadArticle(articleId) {
         viewer.innerHTML = marked.parse(markdownText);
         window.location.hash = articleId;
 
+        // Dynamically update document title for current session
+        const h1 = viewer.querySelector("h1");
+        if (h1 && h1.innerText) {
+            document.title = `${h1.innerText} | Journalctl Iliyas`;
+        } else {
+            document.title = "Journalctl Iliyas";
+        }
+
         if (articleId === "welcome") {
             renderWelcomeGroups(viewer, currentCatalog);
         } else {
