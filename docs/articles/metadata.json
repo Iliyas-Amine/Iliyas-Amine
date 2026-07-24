@@ -1,0 +1,45 @@
+{
+  "groups": {
+    "Debi-Art": {
+      "keywords": [
+        "debian",
+        "linux",
+        "system-engineering",
+        "journal"
+      ],
+      "description": "Technical notes, low-level system exploration, and Debian engineering articles."
+    }
+  },
+  "articles": {
+    "welcome": {
+      "title": "Journalctl Iliyas | Welcome",
+      "description": "Personal notebook, software engineering thoughts, and tech articles by Iliyas Amine.",
+      "keywords": [
+        "journalctl",
+        "iliyas amine",
+        "software engineering",
+        "linux",
+        "c",
+        "embedded"
+      ]
+    },
+    "Debi-Art_0": {
+      "title": "Debi-Art — Chapter 0",
+      "description": "First chapter of the Debi-Art series on Debian systems and setup.",
+      "keywords": [
+        "debian-art",
+        "setup",
+        "chapter-0"
+      ]
+    },
+    "Debi-Art_1": {
+      "title": "Debi-Art — Chapter 1",
+      "description": "Second chapter of the Debi-Art series diving into technical details.",
+      "keywords": [
+        "debian-art",
+        "chapter-1",
+        "system-internals"
+      ]
+    }
+  }
+}

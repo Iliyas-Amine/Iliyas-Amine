@@ -1,31 +1,68 @@
-// Format: "Group_Index" -> Maps to articles/Group_Index.md
-const ARTICLE_FILES = [
-    "welcome",
-    "Debi-Art_0",
-    "Debi-Art_1"
-];
-
-let currentCatalog = {};
+const ARTICLE_FILES = window.__ARTICLE_FILES__ || ["welcome", "Debi-Art_0", "Debi-Art_1"];
+let currentCatalog = window.__CATALOG__ || {};
 
 document.addEventListener("DOMContentLoaded", async () => {
     initTheme();
     initMobileMenu();
 
     const navContainer = document.getElementById("nav-container");
-    currentCatalog = await buildCatalog(ARTICLE_FILES);
+    if (!window.__CATALOG__ || Object.keys(currentCatalog).length === 0) {
+        currentCatalog = await buildCatalog(ARTICLE_FILES);
+    }
     renderSidebar(currentCatalog, navContainer);
-    const initialHash = window.location.hash.replace("#", "");
-    const startArticle = ARTICLE_FILES.includes(initialHash) ? initialHash : "welcome";
-    
-    loadArticle(startArticle);
 
-    window.addEventListener("hashchange", () => {
-        const hash = window.location.hash.replace("#", "");
-        if (hash && ARTICLE_FILES.includes(hash)) {
-            loadArticle(hash);
+    // Click delegation for all article links across the site
+    document.body.addEventListener("click", (e) => {
+        const link = e.target.closest("a[data-id]");
+        if (link) {
+            const articleId = link.getAttribute("data-id");
+            if (articleId && ARTICLE_FILES.includes(articleId)) {
+                e.preventDefault();
+                navigateArticle(articleId);
+            }
         }
     });
+
+    // Handle browser back/forward buttons
+    window.addEventListener("popstate", () => {
+        const article = getCurrentArticleFromUrl();
+        loadArticle(article, false);
+    });
+
+    // Initial page load detection
+    const startArticle = getCurrentArticleFromUrl();
+
+    // Check if page body already has pre-rendered article content
+    const viewer = document.getElementById("article-viewer");
+    const isPreRendered = viewer && viewer.children.length > 0 && !viewer.querySelector(".loading");
+
+    if (isPreRendered) {
+        setActiveSidebarItem(startArticle);
+        if (startArticle === "welcome") {
+            renderWelcomeGroups(viewer, currentCatalog);
+        } else {
+            renderArticleNav(startArticle, viewer);
+        }
+    } else {
+        loadArticle(startArticle, false);
+    }
 });
+
+function getCurrentArticleFromUrl() {
+    let pathSlug = window.location.pathname.replace(/^\/|\/$/g, "");
+    if (!pathSlug && window.location.hash) {
+        pathSlug = window.location.hash.replace("#", "");
+    }
+    return ARTICLE_FILES.includes(pathSlug) ? pathSlug : "welcome";
+}
+
+function navigateArticle(articleId) {
+    const targetUrl = articleId === "welcome" ? "/" : `/${articleId}`;
+    if (window.location.pathname !== targetUrl) {
+        window.history.pushState(null, "", targetUrl);
+    }
+    loadArticle(articleId, false);
+}
 
 function initMobileMenu() {
     const mobileMenuBtn = document.getElementById("mobile-menu-btn");
@@ -73,7 +110,7 @@ async function buildCatalog(files) {
     const catalog = {};
 
     for (const fileName of files) {
-        if (fileName === "welcome") continue; // Special case handled separately
+        if (fileName === "welcome") continue;
 
         const parts = fileName.split("_");
         const group = parts[0];
@@ -101,7 +138,7 @@ async function buildCatalog(files) {
 
 async function extractTitleFromMd(fileName) {
     try {
-        const response = await fetch(`articles/${fileName}.md`);
+        const response = await fetch(`/articles/${fileName}.md`);
         if (!response.ok) return fileName;
         const text = await response.text();
         const firstLine = text.split("\n").find(line => line.trim().startsWith("#"));
@@ -114,18 +151,18 @@ async function extractTitleFromMd(fileName) {
 function renderSidebar(catalog, container) {
     let html = `
         <div class="nav-group">
-            <a class="nav-item" data-id="welcome" href="#welcome">Welcome</a>
+            <a class="nav-item" data-id="welcome" href="/welcome">Welcome</a>
         </div>
     `;
 
     for (const [groupName, items] of Object.entries(catalog)) {
         html += `<div class="nav-group">`;
-        html += `<div class="group-title">${groupName}</div>`;
+        html += `<div class="group-title">${escapeHtml(groupName)}</div>`;
         
         for (const item of items) {
             html += `
-                <a class="nav-item" data-id="${item.id}" href="#${item.id}">
-                    ${item.title}
+                <a class="nav-item" data-id="${item.id}" href="/${item.id}">
+                    ${escapeHtml(item.title)}
                 </a>
             `;
         }
@@ -135,27 +172,35 @@ function renderSidebar(catalog, container) {
     container.innerHTML = html;
 }
 
-async function loadArticle(articleId) {
-    const viewer = document.getElementById("article-viewer");
-    viewer.innerHTML = `<p class="loading">Loading ${articleId}.md...</p>`;
-
+function setActiveSidebarItem(articleId) {
     document.querySelectorAll(".nav-item").forEach(el => {
         el.classList.toggle("active", el.dataset.id === articleId);
     });
+}
 
+async function loadArticle(articleId, updateHistory = true) {
+    const viewer = document.getElementById("article-viewer");
+    viewer.innerHTML = `<p class="loading">Loading ${articleId}.md...</p>`;
+
+    setActiveSidebarItem(articleId);
     closeMobileMenu();
 
+    if (updateHistory) {
+        const targetUrl = articleId === "welcome" ? "/" : `/${articleId}`;
+        if (window.location.pathname !== targetUrl) {
+            window.history.pushState(null, "", targetUrl);
+        }
+    }
+
     try {
-        const response = await fetch(`articles/${articleId}.md`);
+        const response = await fetch(`/articles/${articleId}.md`);
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}`);
         }
         const markdownText = await response.text();
 
         viewer.innerHTML = marked.parse(markdownText);
-        window.location.hash = articleId;
 
-        // Dynamically update document title for current session
         const h1 = viewer.querySelector("h1");
         if (h1 && h1.innerText) {
             document.title = `${h1.innerText} | Journalctl Iliyas`;
@@ -183,6 +228,12 @@ async function loadArticle(articleId) {
 
 function renderWelcomeGroups(viewer, catalog) {
     if (!catalog || Object.keys(catalog).length === 0) return;
+
+    // Remove existing welcome section if present
+    const existingSection = viewer.querySelector(".welcome-groups-section");
+    if (existingSection) {
+        existingSection.remove();
+    }
 
     const section = document.createElement("section");
     section.className = "welcome-groups-section";
@@ -215,7 +266,7 @@ function renderWelcomeGroups(viewer, catalog) {
 
         items.forEach((item, idx) => {
             html += `
-                <a href="#${item.id}" class="article-card" data-id="${item.id}">
+                <a href="/${item.id}" class="article-card" data-id="${item.id}">
                     <span class="card-number">#${idx + 1}</span>
                     <h4 class="card-title">${escapeHtml(item.title)}</h4>
                     <span class="card-action">Read article &rarr;</span>
@@ -275,6 +326,12 @@ function renderWelcomeGroups(viewer, catalog) {
 function renderArticleNav(articleId, viewer) {
     if (articleId === "welcome") return;
 
+    // Remove existing nav if present
+    const existingNav = viewer.querySelector(".article-nav");
+    if (existingNav) {
+        existingNav.remove();
+    }
+
     const parts = articleId.split("_");
     const groupName = parts[0];
     const groupItems = currentCatalog[groupName];
@@ -297,7 +354,7 @@ function renderArticleNav(articleId, viewer) {
 
     if (prevArticle) {
         navContent += `
-            <a href="#${prevArticle.id}" class="article-nav-btn prev-btn" data-id="${prevArticle.id}">
+            <a href="/${prevArticle.id}" class="article-nav-btn prev-btn" data-id="${prevArticle.id}">
                 <span class="nav-btn-label">&larr; Previous</span>
                 <span class="nav-btn-title">${escapeHtml(prevArticle.title)}</span>
             </a>
@@ -306,7 +363,7 @@ function renderArticleNav(articleId, viewer) {
 
     if (nextArticle) {
         navContent += `
-            <a href="#${nextArticle.id}" class="article-nav-btn next-btn" data-id="${nextArticle.id}">
+            <a href="/${nextArticle.id}" class="article-nav-btn next-btn" data-id="${nextArticle.id}">
                 <span class="nav-btn-label">Next &rarr;</span>
                 <span class="nav-btn-title">${escapeHtml(nextArticle.title)}</span>
             </a>
@@ -319,7 +376,7 @@ function renderArticleNav(articleId, viewer) {
 
 function escapeHtml(str) {
     if (!str) return "";
-    return str
+    return String(str)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
