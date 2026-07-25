@@ -5,6 +5,7 @@
         "debian",
         "linux",
         "system-engineering",
+        "ricing",
         "journal"
       ],
       "description": "Technical notes, low-level system exploration, and Debian engineering articles."
@@ -20,7 +21,9 @@
         "software engineering",
         "linux",
         "c",
-        "embedded"
+        "go",
+        "golang",
+        "python"
       ]
     },
     "Debi-Art_0": {
@@ -29,7 +32,11 @@
       "keywords": [
         "debian-art",
         "setup",
-        "chapter-0"
+        "chapter-1",
+        "vm",
+        "virtual machine",
+        "testing",
+        "sudo"
       ]
     },
     "Debi-Art_1": {
@@ -37,8 +44,26 @@
       "description": "Second chapter of the Debi-Art series diving into technical details.",
       "keywords": [
         "debian-art",
-        "chapter-1",
-        "system-internals"
+        "chapter-2",
+        "system-internals",
+        "firmware",
+        "grub",
+        "setup",
+        "packages",
+        "cleanup"
+      ]
+    },
+    "Debi-Art_2": {
+      "title": "03. The Final Core Touch",
+      "description": "Third chapter of the Debi-Art series finishing the technical dive.",
+      "keywords": [
+        "debian-art",
+        "chapter-3",
+        "core",
+        "audio",
+        "sound",
+        "network",
+        "wifi"
       ]
     }
   }
