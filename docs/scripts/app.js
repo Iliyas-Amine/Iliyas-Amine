@@ -4,6 +4,7 @@ let currentCatalog = window.__CATALOG__ || {};
 document.addEventListener("DOMContentLoaded", async () => {
     initTheme();
     initMobileMenu();
+    initSidebarToggle();
 
     const navContainer = document.getElementById("nav-container");
     if (!window.__CATALOG__ || Object.keys(currentCatalog).length === 0) {
@@ -62,6 +63,31 @@ function navigateArticle(articleId) {
         window.history.pushState(null, "", targetUrl);
     }
     loadArticle(articleId, false);
+}
+
+function initSidebarToggle() {
+    const layout = document.querySelector(".layout");
+    const sidebarToggleBtn = document.getElementById("sidebar-toggle-btn");
+    const sidebarShowBtn = document.getElementById("sidebar-show-btn");
+
+    const savedState = localStorage.getItem("sidebar-state");
+    if (savedState === "collapsed" && layout) {
+        layout.classList.add("sidebar-collapsed");
+    }
+
+    if (sidebarToggleBtn && layout) {
+        sidebarToggleBtn.addEventListener("click", () => {
+            layout.classList.add("sidebar-collapsed");
+            localStorage.setItem("sidebar-state", "collapsed");
+        });
+    }
+
+    if (sidebarShowBtn && layout) {
+        sidebarShowBtn.addEventListener("click", () => {
+            layout.classList.remove("sidebar-collapsed");
+            localStorage.setItem("sidebar-state", "expanded");
+        });
+    }
 }
 
 function initMobileMenu() {

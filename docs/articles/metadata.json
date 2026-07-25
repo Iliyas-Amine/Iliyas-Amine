@@ -24,7 +24,7 @@
       ]
     },
     "Debi-Art_0": {
-      "title": "Debi-Art — Chapter 0",
+      "title": "01. Getting Started",
       "description": "First chapter of the Debi-Art series on Debian systems and setup.",
       "keywords": [
         "debian-art",
@@ -33,7 +33,7 @@
       ]
     },
     "Debi-Art_1": {
-      "title": "Debi-Art — Chapter 1",
+      "title": "02. Firmware, GRUB, and Packages",
       "description": "Second chapter of the Debi-Art series diving into technical details.",
       "keywords": [
         "debian-art",

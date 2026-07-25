@@ -70,12 +70,10 @@ function build() {
         if (!catalog[group]) catalog[group] = [];
 
         const articleMeta = metadata.articles?.[slug] || {};
-        let title = articleMeta.title;
-        if (!title) {
-            const mdContent = fs.readFileSync(path.join(ARTICLES_DIR, `${slug}.md`), 'utf8');
-            const firstHeading = mdContent.split('\n').find(l => l.trim().startsWith('#'));
-            title = firstHeading ? firstHeading.replace(/^#\s*/, '').trim() : slug;
-        }
+        const mdContent = fs.readFileSync(path.join(ARTICLES_DIR, `${slug}.md`), 'utf8');
+        const firstHeading = mdContent.split('\n').find(l => l.trim().startsWith('#'));
+        const mdTitle = firstHeading ? firstHeading.replace(/^#\s*/, '').trim() : null;
+        const title = mdTitle || articleMeta.title || slug;
 
         catalog[group].push({
             id: slug,
@@ -117,11 +115,9 @@ function build() {
         const articleMeta = metadata.articles?.[slug] || {};
         const groupMeta = (groupName && metadata.groups?.[groupName]) || {};
 
-        let title = articleMeta.title;
-        if (!title) {
-            const firstHeading = mdContent.split('\n').find(l => l.trim().startsWith('#'));
-            title = firstHeading ? firstHeading.replace(/^#\s*/, '').trim() : slug;
-        }
+        const firstHeading = mdContent.split('\n').find(l => l.trim().startsWith('#'));
+        const mdTitle = firstHeading ? firstHeading.replace(/^#\s*/, '').trim() : null;
+        const title = mdTitle || articleMeta.title || slug;
 
         let description = articleMeta.description;
         if (!description) {

@@ -78,17 +78,26 @@ body {
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
+    transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+    overflow: hidden;
 }
 
 .brand {
-    padding: 1.5rem 1.5rem 1.25rem;
+    padding: 1.25rem 1.25rem 1.15rem;
     border-bottom: 1px solid var(--border-color);
+}
+
+.brand-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 0.5rem;
 }
 
 .brand h1 {
     font-family: var(--font-display);
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     font-weight: 700;
     color: var(--text-primary);
     letter-spacing: -0.02em;
@@ -103,6 +112,72 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.08em;
     margin-top: 0.35rem;
+}
+
+/* Sidebar toggle button (desktop) */
+.sidebar-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.sidebar-toggle-btn:hover {
+    background: var(--bg-hover);
+    border-color: var(--border-strong);
+    color: var(--text-primary);
+}
+
+/* Show sidebar button (floating fixed when collapsed on desktop) */
+.sidebar-show-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    background: var(--bg-sidebar);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.sidebar-show-btn:hover {
+    background: var(--bg-hover);
+    border-color: var(--border-strong);
+    transform: scale(1.06);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+@media (min-width: 769px) {
+    .layout.sidebar-collapsed .sidebar {
+        width: 0;
+        min-width: 0;
+        border-right-width: 0;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .layout.sidebar-collapsed .sidebar-show-btn {
+        display: inline-flex;
+        position: fixed;
+        top: 1.25rem;
+        left: 1.25rem;
+        z-index: 100;
+    }
 }
 
 .nav-container {
@@ -590,7 +665,6 @@ body {
     transform: rotate(-45deg);
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
     body {
         height: 100vh;
@@ -612,6 +686,24 @@ body {
         flex-shrink: 0;
     }
 
+    .brand {
+        padding: 0.5rem 0.85rem;
+    }
+
+    .brand h1 {
+        font-size: 1.1rem;
+        line-height: 1.2;
+    }
+
+    .brand .tagline {
+        display: none;
+    }
+
+    .sidebar-toggle-btn,
+    .sidebar-show-btn {
+        display: none !important;
+    }
+
     .brand-header-content {
         display: flex;
         align-items: center;
@@ -621,6 +713,8 @@ body {
 
     .mobile-menu-btn {
         display: flex;
+        width: 32px;
+        height: 32px;
     }
 
     .sidebar .nav-container,
