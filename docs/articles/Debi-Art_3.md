@@ -443,7 +443,7 @@ Finish HIM:
 Patch is done:
 ```bash
 git add .
-git commit -m "Apply hide_vacant_tags"
+git commit -m "Apply azerty"
 ```
 
 I am so **DONE** with patching.
@@ -456,7 +456,7 @@ sudo make clean install
 MAGIC! It compiled successfully! <br>
 I haven't tested it yet, but I'll fix it if it isn't working. Later, for now I'm done patching.
 
-## Wrapping Up
+## Wrapping Up
 That was brutal, but it's a big step out of the way. Next post will tackle another Suckless tool. Hopefully with less patching.
 
 ---
