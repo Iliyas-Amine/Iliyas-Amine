@@ -1,7 +1,7 @@
 # 03. The Final Core Touch
 
 ## Recap
-In the previous post, we went over manual firmware setup, some tweaks to GRUB, and cleaning up packages. I also mentioned that it was the bulk of the boring setup. So, in this post, we will finish up the setup and finally be able to move onto other tasks more in line with what you'd think ricing is all about.
+In the previous post, we went over manual firmware setup, some tweaks to GRUB, and cleaning up packages. I also mentioned that it was the bulk of the boring setup. So, in this post, we will finish up the setup and finally be able to move on to other tasks more in line with what you'd think ricing is all about.
 
 ## Core Dependencies
 I never like to simply dump a command here without explaining what it does, but this will have to be the exception, and for good reason.<br>
@@ -9,7 +9,7 @@ What the following command does is install all the dependencies needed for the r
 
 With that said:
 ```bash
-sudo apt install xorg build-essential libx11-dev libxinerama-dev libxft-dev git feh picom unzip libgtk-3-0 libnss3 libnspr4 libgbm1 libasound2 libpulse0 libcups2 libxss1 libdbus-1-3 libatk-bridge2.0-0 libxcomposite1 libxdamage1 libxrender1 libxrandr2 libxtst6 curl gpg iwd brightnessctl scrot libpam0g-dev libxcb-xkb-dev pipewire wireplumber pipewire-pulse pipewire-alsa libspa-0.2-bluetooth
+sudo apt install --no-install-recommends build-essential libx11-dev libxft-dev libxinerama-dev libpam0g-dev libxcb-xkb-dev libx11-xcb-dev libxcb-res0-dev xserver-xorg-core xinit xserver-xorg-input-libinput xserver-xorg-video-intel mesa-va-drivers pipewire wireplumber pipewire-pulse libspa-0.2-bluetooth iwd curl git gpg unzip feh picom scrot brightnessctl
 ```
 
 Quite a big command, but I will say this, each time I reach a point that uses a dependency, I'll make sure to make that loud and clear.
@@ -19,7 +19,7 @@ Time to setup sound!<br>
 Technically speaking, this step could have been postponed and delayed until audio is needed, but I prefer to set it up now.<br>
 Who doesn't love building out a new feature and having sound 'just work' because the foundation was already laid? I know I do.
 
-To keep it simple, I'm using `pipewire` as the core audio engine, `wireplumber` as the session manager for it, `pipewire-pulse` and `pipewire-alsa` to handle applications and services expecting PulseAudio and ALSA respectively, and `libspa-0.2-bluetooth` for Bluetooth audio codecs.
+To keep it simple, I'm using `pipewire` as the core audio engine, `wireplumber` as the session manager for it, `pipewire-pulse` to handle applications and services expecting PulseAudio, and `libspa-0.2-bluetooth` for Bluetooth audio codecs.
 
 All that’s left to do is enable the services:
 ```bash
@@ -77,7 +77,7 @@ iwctl station wlan0 scan
 iwctl station wlan0 get-networks
 ```
 
-Now, select a Wi-Fi network and to connect:
+Now, select a Wi-Fi network and connect:
 ```bash
 iwctl --passphrase "PASSWORD" station wlan0 connect "SSID"
 ```
