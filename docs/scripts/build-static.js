@@ -102,6 +102,10 @@ function build() {
 
     copyDirSync(path.join(ROOT_DIR, 'scripts'), path.join(OUT_DIR, 'scripts'));
     copyDirSync(ARTICLES_DIR, path.join(OUT_DIR, 'articles'));
+    const rootAssetsDir = path.join(ROOT_DIR, 'assets');
+    if (fs.existsSync(rootAssetsDir)) {
+        copyDirSync(rootAssetsDir, path.join(OUT_DIR, 'assets'));
+    }
 
     // Inject Catalog Script tag into head
     const catalogDataScript = `<script>window.__ARTICLE_FILES__ = ${JSON.stringify(sortedFiles)}; window.__CATALOG__ = ${JSON.stringify(catalog)};</script>`;
