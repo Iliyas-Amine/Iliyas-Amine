@@ -65,6 +65,19 @@
         "network",
         "wifi"
       ]
+    },
+    "Debi-Art_3": {
+      "title": "04. Making the window manager Suck a bit less",
+      "description": "Fourth chapter of the Debi-Art series marching into window manager territory.",
+      "keywords": [
+        "debian-art",
+        "chapter-3",
+        "window manager",
+        "wm",
+        "suckless",
+        "x11",
+        "dwm"
+      ]
     }
   }
 }
