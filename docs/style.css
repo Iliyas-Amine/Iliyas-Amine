@@ -381,6 +381,18 @@ body {
     margin-bottom: 1.4rem;
 }
 
+/* Responsive images fit to field of vision */
+.markdown-body img {
+    display: block;
+    max-width: 100%;
+    max-height: 75vh;
+    height: auto;
+    width: auto;
+    object-fit: contain;
+    margin: 1.5rem auto;
+    border-radius: var(--radius-md);
+}
+
 .loading {
     font-family: var(--font-mono);
     font-size: 0.9rem;
