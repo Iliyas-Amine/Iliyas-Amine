@@ -9,7 +9,7 @@ What the following command does is install all the dependencies needed for the r
 
 With that said:
 ```bash
-sudo apt install --no-install-recommends build-essential libx11-dev libxft-dev libxinerama-dev libpam0g-dev libxcb-xkb-dev libx11-xcb-dev libxcb-res0-dev xserver-xorg-core xinit xserver-xorg-input-libinput xserver-xorg-video-intel mesa-va-drivers pipewire wireplumber pipewire-pulse libspa-0.2-bluetooth iwd curl git gpg unzip feh picom scrot brightnessctl
+sudo apt install --no-install-recommends build-essential libx11-dev libxft-dev libxinerama-dev libpam0g-dev libxcb-xkb-dev libx11-xcb-dev libxcb-res0-dev xserver-xorg-core xinit xserver-xorg-input-libinput xserver-xorg-video-intel mesa-va-drivers pipewire libharfbuzz-dev libgd-dev wireplumber pipewire-pulse libspa-0.2-bluetooth iwd curl git gpg unzip feh picom scrot brightnessctl
 ```
 
 Quite a big command, but I will say this, each time I reach a point that uses a dependency, I'll make sure to make that loud and clear.

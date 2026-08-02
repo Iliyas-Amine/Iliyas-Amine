@@ -71,12 +71,27 @@
       "description": "Fourth chapter of the Debi-Art series marching into window manager territory.",
       "keywords": [
         "debian-art",
-        "chapter-3",
+        "chapter-4",
         "window manager",
         "wm",
         "suckless",
         "x11",
         "dwm"
+      ]
+    },
+    "Debi-Art_4": {
+      "title": "05. Keep the Terminal Simple",
+      "description": "Fifth chapter of the Debi-Art series covering the installation of a simple terminal.",
+      "keywords": [
+        "debian-art",
+        "chapter-5",
+        "terminal",
+        "st",
+        "suckless",
+        "x11",
+        "patching",
+        "ligatures",
+        "boxdraw"
       ]
     }
   }
